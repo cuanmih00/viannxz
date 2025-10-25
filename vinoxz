@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Nembak Gebetan</title>
+    <style>
+        body {
+            font-family: "Comic Sans MS", "Poppins", sans-serif;
+            background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            text-align: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* 🔥 Tulisan besar di background */
+        .bg-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 100px;
+            font-weight: 900;
+            color: rgba(255, 255, 255, 0.15);
+            z-index: 0;
+            user-select: none;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+            letter-spacing: 10px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        h1, h2 {
+            color: white;
+            margin: 0.5em 0;
+            z-index: 1;
+        }
+
+        input, button {
+            padding: 10px 20px;
+            font-size: 1em;
+            margin: 10px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            z-index: 1;
+        }
+
+        .yes {
+            background-color: #4caf50;
+            color: white;
+        }
+
+        .no {
+            background-color: #f44336;
+            color: white;
+            position: absolute;
+            transition: 0.3s ease;
+        }
+
+        #waLink {
+            background-color: #25d366;
+            color: white;
+            font-size: 1.2em;
+            padding: 12px 25px;
+            border-radius: 8px;
+            text-decoration: none;
+            z-index: 1;
+        }
+
+        #musicControl {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.7);
+            padding: 5px 10px;
+            border-radius: 20px;
+            cursor: pointer;
+            z-index: 2;
+        }
+    </style>
+</head>
+<body>
+    <!-- 🌟 Tulisan besar di background -->
+    <div class="bg-text">VINO_STORE</div>
+
+    <!-- Audio background -->
+    <audio id="bgMusic" loop autoplay>
+        <source src="https://files.catbox.moe/fz6yyy.mp3" type="audio/mpeg">
+        Browser kamu tidak mendukung audio.
+    </audio>
+
+    <div id="musicControl" onclick="toggleMusic()">🔊 Musik On</div>
+
+    <!-- Form awal -->
+    <div id="formAwal">
+        <h1>Masukin nama kamu dulu:</h1>
+        <input type="text" id="nama" placeholder="Masukin Namamu" />
+        <button onclick="lanjut()">Lanjut</button>
+    </div>
+
+    <!-- Pertanyaan -->
+    <div id="tanyaCinta" class="hidden">
+        <h1 id="pertanyaan"></h1>
+        <button class="yes" onclick="jawabYes()">Mau</button>
+        <button class="no" id="noButton" onclick="tolak()">Nggak Mau</button>
+    </div>
+
+    <!-- Hasil -->
+    <div id="hasil" class="hidden">
+        <h2>💖 JADIAN! 💖</h2>
+        <h2>JAM: <span id="jam"></span></h2>
+        <h2>NAMA: <span id="namaGebetan"></span></h2>
+        <h2>STATUS: PACARAN!</h2>
+        <a id="waLink" href="" target="_blank">Chat ke WhatsApp 💬</a>
+    </div>
+
+    <script>
+        // Musik kontrol
+        const bgMusic = document.getElementById("bgMusic");
+        const musicControl = document.getElementById("musicControl");
+
+        function enableAutoplay() {
+            bgMusic.volume = 0.3;
+            bgMusic.play().catch(() => {
+                musicControl.textContent = "▶️ Musik Off (Klik untuk play)";
+            });
+        }
+
+        function toggleMusic() {
+            if (bgMusic.paused) {
+                bgMusic.play();
+                musicControl.textContent = "🔊 Musik On";
+            } else {
+                bgMusic.pause();
+                musicControl.textContent = "▶️ Musik Off";
+            }
+        }
+
+        document.addEventListener("click", enableAutoplay, { once: true });
+
+        function lanjut() {
+            const nama = document.getElementById("nama").value.trim();
+            if (nama === "") {
+                alert("Masukin dong namanya...");
+                return;
+            }
+            document.getElementById("formAwal").classList.add("hidden");
+            document.getElementById("tanyaCinta").classList.remove("hidden");
+            ketikTanya(nama);
+        }
+
+        function ketikTanya(nama) {
+            let text = `Hai ${nama}, jadian yuk?`;
+            let i = 0;
+            const pertanyaan = document.getElementById("pertanyaan");
+            pertanyaan.textContent = "";
+            function ketik() {
+                if (i < text.length) {
+                    pertanyaan.textContent += text.charAt(i);
+                    i++;
+                    setTimeout(ketik, 100);
+                }
+            }
+            ketik();
+        }
+
+        function jawabYes() {
+            const nama = document.getElementById("nama").value;
+            const currentTime = new Date();
+            const jam =
+                currentTime.getHours().toString().padStart(2, "0") +
+                ":" +
+                currentTime.getMinutes().toString().padStart(2, "0");
+
+            document.getElementById("tanyaCinta").classList.add("hidden");
+            document.getElementById("hasil").classList.remove("hidden");
+
+            document.getElementById("jam").textContent = jam;
+            document.getElementById("namaGebetan").textContent = nama;
+
+            const waLink = `https://wa.me/6285855962331?text=💖%20JADIAN!%20💖%0A%0AJAM%20:%20${jam}%0ANAMA%20:%20${nama}%0ASTATUS%20:%20PACARAN!`;
+            document.getElementById("waLink").href = waLink;
+        }
+
+        function tolak() {
+            alert("Eitss, nggak kena 😝");
+            geserTombol();
+        }
+
+        function geserTombol() {
+            const button = document.getElementById("noButton");
+            const maxWidth = window.innerWidth - button.offsetWidth;
+            const maxHeight = window.innerHeight - button.offsetHeight;
+            const randomX = Math.floor(Math.random() * maxWidth);
+            const randomY = Math.floor(Math.random() * maxHeight);
+            button.style.left = `${randomX}px`;
+            button.style.top = `${randomY}px`;
+        }
+    </script>
+</body>
+</html
